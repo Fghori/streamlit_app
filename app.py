@@ -10,7 +10,7 @@ from sklearn.metrics import mean_squared_error
 
 # Load the dataset
 def load_data():
-    data = pd.read_csv("datasets/merged_dataset.csv")
+    data = pd.read_csv("data2.csv")
     return data
 
 def main():
