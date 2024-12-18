@@ -6,7 +6,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 
-
 # Load the dataset
 def load_data():
     data = pd.read_csv("data2.csv")
@@ -42,8 +41,6 @@ def main():
         year_range = st.slider("Select Year Range", 2013, 2017, (2013, 2017))
 
         # Filter data by the selected year range
-        # data['Date'] = pd.to_datetime(data['Date'])
-        # data['Year'] = data['Date'].dt.year
         filtered_data = data[(data['year'] >= year_range[0]) & (data['year'] <= year_range[1])]
 
         # Show filtered data
@@ -51,25 +48,46 @@ def main():
         st.write(filtered_data)
 
         # PM2.5 Distribution
-        st.write("### PM2.5 Distribution")
+        st.write("### Distribution of PM2.5")
         plt.figure(figsize=(10, 6))
-        sns.histplot(filtered_data['PM2.5'], kde=True)
+        sns.histplot(filtered_data['PM2.5'], kde=True, bins=50, color='blue')
+        plt.title('Distribution of PM2.5')
+        plt.xlabel('PM2.5 Concentration')
+        plt.ylabel('Frequency')
         st.pyplot()
 
-        # PM2.5 Time Series Plot
-        st.write("### PM2.5 Over Time")
+        # Check for missing values and handle them
+        st.write("### Checking for Missing Values")
+        if filtered_data[['PM2.5', 'TEMP']].isnull().any().any():
+            st.write("Dataset contains missing values. Filling them with mean values.")
+            filtered_data['PM2.5'].fillna(filtered_data['PM2.5'].mean(), inplace=True)
+            filtered_data['TEMP'].fillna(filtered_data['TEMP'].mean(), inplace=True)
+        else:
+            st.write("No missing values found in PM2.5 and Temperature columns.")
+
+        # Plotting PM2.5 vs Temperature
+        st.write("### PM2.5 vs Temperature")
         plt.figure(figsize=(10, 6))
-        plt.plot(filtered_data['year'], filtered_data['PM2.5'], color='blue')
-        plt.title('PM2.5 Over Time')
-        plt.xlabel('year')
-        plt.ylabel('PM2.5')
+        sns.scatterplot(x=filtered_data['TEMP'], y=filtered_data['PM2.5'], color='orange', alpha=0.7, marker='x')
+        plt.title("PM2.5 vs Temperature", fontsize=16)
+        plt.xlabel("Temperature (°C)", fontsize=14)
+        plt.ylabel("PM2.5 (µg/m³)", fontsize=14)
+        plt.grid(True, linestyle='--', alpha=0.5)
+        plt.ticklabel_format()
         st.pyplot()
 
-        # Correlation Heatmap
+        # Correlation heatmap
         st.write("### Correlation Heatmap")
-        plt.figure(figsize=(10, 6))
-        corr = filtered_data[['TEMP', 'DEWP', 'PRES', 'PM2.5']].corr()
-        sns.heatmap(corr, annot=True, cmap='coolwarm', fmt='.2f')
+        # Filter numeric columns only
+        numeric_data = filtered_data.select_dtypes(include=['float64', 'int64'])
+
+        # Compute correlation matrix
+        corr_matrix = numeric_data.corr()
+
+        # Plot heatmap
+        plt.figure(figsize=(12, 8))
+        sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap="coolwarm", cbar=True)
+        plt.title('Correlation Heatmap')
         st.pyplot()
 
     elif choice == "Modeling and Prediction":
