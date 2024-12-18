@@ -149,42 +149,42 @@ def main():
         plt.grid(alpha=0.3)
         st.pyplot()
         
-            # Train the Random Forest model
-        rf_model = RandomForestRegressor(random_state=42)
-        rf_model.fit(X_train, y_train)
+    #         # Train the Random Forest model
+    #     rf_model = RandomForestRegressor(random_state=42)
+    #     rf_model.fit(X_train, y_train)
 
-    # Predictions for Random Forest
-        rf_pred = rf_model.predict(X_test)
+    # # Predictions for Random Forest
+    #     rf_pred = rf_model.predict(X_test)
 
-    # Evaluate the Random Forest model
-        rf_mse = mean_squared_error(y_test, rf_pred)
-        rf_r2 = r2_score(y_test, rf_pred)
-        st.write(f"### Random Forest - Mean Squared Error: {rf_mse:.4f}")
-        st.write(f"### Random Forest - R-squared: {rf_r2:.4f}")
+    # # Evaluate the Random Forest model
+    #     rf_mse = mean_squared_error(y_test, rf_pred)
+    #     rf_r2 = r2_score(y_test, rf_pred)
+    #     st.write(f"### Random Forest - Mean Squared Error: {rf_mse:.4f}")
+    #     st.write(f"### Random Forest - R-squared: {rf_r2:.4f}")
 
-    # Scatter plot of actual vs predicted values for Random Forest
-        st.write("### Random Forest: Actual vs Predicted Values")
-        plt.figure(figsize=(10, 6))
-        plt.scatter(y_test, rf_pred, color='blue', alpha=0.6, edgecolors='k', label='Predictions')
-        plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--', lw=2, label='Ideal Fit')
-        plt.title('Random Forest: Actual vs Predicted Values', fontsize=16)
-        plt.xlabel('Actual Values (y_test)', fontsize=14)
-        plt.ylabel('Predicted Values (rf_pred)', fontsize=14)
-        plt.legend(fontsize=12)
-        plt.grid(alpha=0.3)
-        st.pyplot()
+    # # Scatter plot of actual vs predicted values for Random Forest
+    #     st.write("### Random Forest: Actual vs Predicted Values")
+    #     plt.figure(figsize=(10, 6))
+    #     plt.scatter(y_test, rf_pred, color='blue', alpha=0.6, edgecolors='k', label='Predictions')
+    #     plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--', lw=2, label='Ideal Fit')
+    #     plt.title('Random Forest: Actual vs Predicted Values', fontsize=16)
+    #     plt.xlabel('Actual Values (y_test)', fontsize=14)
+    #     plt.ylabel('Predicted Values (rf_pred)', fontsize=14)
+    #     plt.legend(fontsize=12)
+    #     plt.grid(alpha=0.3)
+    #     st.pyplot()
 
-    # Residuals plot for Random Forest
-        rf_residuals = y_test - rf_pred
-        st.write("### Random Forest: Residuals Plot")
-        plt.figure(figsize=(10, 6))
-        plt.scatter(rf_pred, rf_residuals, color='green', alpha=0.6, edgecolors='k')
-        plt.axhline(y=0, color='r', linestyle='--', lw=2)
-        plt.title('Random Forest: Residuals Plot', fontsize=16)
-        plt.xlabel('Predicted Values (rf_pred)', fontsize=14)
-        plt.ylabel('Residuals (y_test - rf_pred)', fontsize=14)
-        plt.grid(alpha=0.3)
-        st.pyplot()
+    # # Residuals plot for Random Forest
+    #     rf_residuals = y_test - rf_pred
+    #     st.write("### Random Forest: Residuals Plot")
+    #     plt.figure(figsize=(10, 6))
+    #     plt.scatter(rf_pred, rf_residuals, color='green', alpha=0.6, edgecolors='k')
+    #     plt.axhline(y=0, color='r', linestyle='--', lw=2)
+    #     plt.title('Random Forest: Residuals Plot', fontsize=16)
+    #     plt.xlabel('Predicted Values (rf_pred)', fontsize=14)
+    #     plt.ylabel('Residuals (y_test - rf_pred)', fontsize=14)
+    #     plt.grid(alpha=0.3)
+    #     st.pyplot()
 
 #         # Add the R-squared values of both models to a dictionary
 #         scores = {
