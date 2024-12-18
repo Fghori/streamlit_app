@@ -5,6 +5,9 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import r2_score
+
 
 # Load the dataset
 def load_data():
@@ -94,44 +97,55 @@ def main():
         st.subheader("Modeling and Prediction")
 
         # Features and target
-        features = ['TEMP', 'DEWP', 'PRES']
+        features = ['PM10', 'SO2', 'NO2', 'CO', 'O3', 'TEMP', 'PRES', 'DEWP', 'RAIN', 'WSPM', 'wd']
         target = 'PM2.5'
 
-        # Train-test split
+        # Prepare features and target
         X = data[features]
         y = data[target]
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-        # Linear regression model
+        # Scale the features
+        scaler = StandardScaler()
+        X_scaled = scaler.fit_transform(X)
+
+        # Split the data into training and testing sets
+        X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+
+        # Train the model
         model = LinearRegression()
         model.fit(X_train, y_train)
+
+        # Predictions
         y_pred = model.predict(X_test)
 
-        # Model evaluation
+        # Evaluate the model
         mse = mean_squared_error(y_test, y_pred)
+        r2 = r2_score(y_test, y_pred)
         st.write(f"### Mean Squared Error: {mse:.4f}")
+        st.write(f"### R-squared: {r2:.4f}")
 
-        # Predictions vs Actual Plot
-        st.write("### Predictions vs Actual Values")
+        # Scatter plot of actual vs predicted values
+        st.write("### Actual vs Predicted Values")
         plt.figure(figsize=(10, 6))
-        plt.scatter(y_test, y_pred)
-        plt.title('Predictions vs Actual Values')
-        plt.xlabel('Actual PM2.5')
-        plt.ylabel('Predicted PM2.5')
+        plt.scatter(y_test, y_pred, color='blue', alpha=0.6, edgecolors='k', label='Predictions')
+        plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--', lw=2, label='Ideal Fit')
+        plt.title('Actual vs Predicted Values', fontsize=16)
+        plt.xlabel('Actual Values (y_test)', fontsize=14)
+        plt.ylabel('Predicted Values (y_pred)', fontsize=14)
+        plt.legend(fontsize=12)
+        plt.grid(alpha=0.3)
         st.pyplot()
 
-        # Model Coefficients
-        st.write("### Model Coefficients")
-        coefficients = pd.DataFrame(model.coef_, features, columns=['Coefficient'])
-        st.write(coefficients)
-
-        # Plotting residuals
-        st.write("### Residuals Plot")
+        # Residuals plot
         residuals = y_test - y_pred
+        st.write("### Residuals Plot")
         plt.figure(figsize=(10, 6))
-        sns.histplot(residuals, kde=True, color='red')
-        plt.title('Residuals Distribution')
-        plt.xlabel('Residuals')
+        plt.scatter(y_pred, residuals, color='purple', alpha=0.6, edgecolors='k')
+        plt.axhline(y=0, color='r', linestyle='--', lw=2)
+        plt.title('Residuals Plot', fontsize=16)
+        plt.xlabel('Predicted Values (y_pred)', fontsize=14)
+        plt.ylabel('Residuals (y_test - y_pred)', fontsize=14)
+        plt.grid(alpha=0.3)
         st.pyplot()
 
 if __name__ == "__main__":
