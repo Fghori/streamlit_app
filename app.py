@@ -55,7 +55,7 @@ def main():
         # PM2.5 Time Series Plot
         st.write("### PM2.5 Over Time")
         plt.figure(figsize=(10, 6))
-        plt.plot(filtered_data['Date'], filtered_data['PM2.5'], color='blue')
+        plt.plot(filtered_data['year'], filtered_data['PM2.5'], color='blue')
         plt.title('PM2.5 Over Time')
         plt.xlabel('year')
         plt.ylabel('PM2.5')
