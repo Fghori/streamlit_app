@@ -1,4 +1,4 @@
-
+%%writefile app.py
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -7,10 +7,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 
-# Load the dataset
 
+# Load the dataset
 def load_data():
-    data = pd.read_csv("data2.csv")
+    data = pd.read_csv("datasets/merged_dataset.csv")
     return data
 
 def main():
@@ -33,19 +33,17 @@ def main():
     elif choice == "Exploratory Data Analysis (EDA)":
         st.subheader("Exploratory Data Analysis")
 
-        # Date range selection
-        st.write("### Filter Data by Date Range")
-        date_range = st.date_input("Select Date Range", [])
+        # Year range selection (2013 - 2017)
+        st.write("### Filter Data by Year Range (2013 - 2017)")
+        year_range = st.slider("Select Year Range", 2013, 2017, (2013, 2017))
 
-        if date_range:
-            start_date, end_date = date_range
-            data['Date'] = pd.to_datetime(data['Date'])
-            filtered_data = data[(data['Date'] >= start_date) & (data['Date'] <= end_date)]
-        else:
-            filtered_data = data
+        # Filter data by the selected year range
+        data['Date'] = pd.to_datetime(data['Date'])
+        data['Year'] = data['Date'].dt.year
+        filtered_data = data[(data['Year'] >= year_range[0]) & (data['Year'] <= year_range[1])]
 
         # Show filtered data
-        st.write(f"Showing Data from {start_date} to {end_date}")
+        st.write(f"Showing Data from {year_range[0]} to {year_range[1]}")
         st.write(filtered_data)
 
         # PM2.5 Distribution
