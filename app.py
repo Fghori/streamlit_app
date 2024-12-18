@@ -102,6 +102,12 @@ def main():
         X = data[features]
         y = data[target]
 
+        # Ensure all features are numeric
+        X = X.apply(pd.to_numeric, errors='coerce')
+
+        # Drop rows where any NaN values exist in X (features)
+        X = X.dropna()
+
         # Scale features
         scaler = StandardScaler()
         X_scaled = scaler.fit_transform(X)
