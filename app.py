@@ -3,8 +3,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.ensemble import RandomForestRegressor
 
 # Load the dataset
 def load_data():
@@ -93,45 +95,109 @@ def main():
     elif choice == "Modeling and Prediction":
         st.subheader("Modeling and Prediction")
 
-        # Features and target
-        features = ['TEMP', 'DEWP', 'PRES']
+        # Define features and target variable
+        features = ['PM10', 'SO2', 'NO2', 'CO', 'O3', 'TEMP', 'PRES', 'DEWP', 'RAIN', 'WSPM', 'wd']
         target = 'PM2.5'
 
-        # Train-test split
         X = data[features]
         y = data[target]
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-        # Linear regression model
-        model = LinearRegression()
-        model.fit(X_train, y_train)
-        y_pred = model.predict(X_test)
+        # Scale features
+        scaler = StandardScaler()
+        X_scaled = scaler.fit_transform(X)
 
-        # Model evaluation
-        mse = mean_squared_error(y_test, y_pred)
-        st.write(f"### Mean Squared Error: {mse:.4f}")
+        # Split data into training and testing sets
+        X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 
-        # Predictions vs Actual Plot
-        st.write("### Predictions vs Actual Values")
+        # Linear Regression Model
+        lr_model = LinearRegression()
+        lr_model.fit(X_train, y_train)
+
+        # Predictions
+        y_pred_lr = lr_model.predict(X_test)
+
+        # Evaluate the model
+        mse_lr = mean_squared_error(y_test, y_pred_lr)
+        r2_lr = r2_score(y_test, y_pred_lr)
+        
+        # Random Forest Model
+        rf_model = RandomForestRegressor(random_state=42)
+        rf_model.fit(X_train, y_train)
+
+        # Predictions
+        y_pred_rf = rf_model.predict(X_test)
+
+        # Evaluate the model
+        mse_rf = mean_squared_error(y_test, y_pred_rf)
+        r2_rf = r2_score(y_test, y_pred_rf)
+
+        # Display evaluation metrics
+        st.write(f"### Linear Regression - Mean Squared Error: {mse_lr:.4f}, R-squared: {r2_lr:.4f}")
+        st.write(f"### Random Forest - Mean Squared Error: {mse_rf:.4f}, R-squared: {r2_rf:.4f}")
+
+        # Visualization of model comparison
+        st.write("### Comparison of Models")
+
+        # Bar plot for MSE and R-squared
+        model_metrics = pd.DataFrame({
+            'Model': ['Linear Regression', 'Random Forest'],
+            'Mean Squared Error': [mse_lr, mse_rf],
+            'R-squared': [r2_lr, r2_rf]
+        })
+
         plt.figure(figsize=(10, 6))
-        plt.scatter(y_test, y_pred)
-        plt.title('Predictions vs Actual Values')
-        plt.xlabel('Actual PM2.5')
-        plt.ylabel('Predicted PM2.5')
+        model_metrics.set_index('Model')[['Mean Squared Error', 'R-squared']].plot(kind='bar', color=['red', 'green'])
+        plt.title('Model Comparison: MSE and R-squared')
+        plt.ylabel('Score')
+        plt.xlabel('Model')
         st.pyplot()
 
-        # Model Coefficients
-        st.write("### Model Coefficients")
-        coefficients = pd.DataFrame(model.coef_, features, columns=['Coefficient'])
-        st.write(coefficients)
-
-        # Plotting residuals
-        st.write("### Residuals Plot")
-        residuals = y_test - y_pred
+        # Scatter plot of actual vs predicted values for Linear Regression
+        st.write("### Linear Regression: Actual vs Predicted Values")
         plt.figure(figsize=(10, 6))
-        sns.histplot(residuals, kde=True, color='red')
-        plt.title('Residuals Distribution')
-        plt.xlabel('Residuals')
+        plt.scatter(y_test, y_pred_lr, color='blue', alpha=0.6, edgecolors='k', label='Predictions')
+        plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--', lw=2, label='Ideal Fit')
+        plt.title('Linear Regression: Actual vs Predicted Values', fontsize=16)
+        plt.xlabel('Actual Values (y_test)', fontsize=14)
+        plt.ylabel('Predicted Values (y_pred_lr)', fontsize=14)
+        plt.legend(fontsize=12)
+        plt.grid(alpha=0.3)
+        st.pyplot()
+
+        # Residuals plot for Linear Regression
+        residuals_lr = y_test - y_pred_lr
+        st.write("### Linear Regression: Residuals Plot")
+        plt.figure(figsize=(10, 6))
+        plt.scatter(y_pred_lr, residuals_lr, color='purple', alpha=0.6, edgecolors='k')
+        plt.axhline(y=0, color='r', linestyle='--', lw=2)
+        plt.title('Linear Regression: Residuals Plot', fontsize=16)
+        plt.xlabel('Predicted Values (y_pred_lr)', fontsize=14)
+        plt.ylabel('Residuals (y_test - y_pred_lr)', fontsize=14)
+        plt.grid(alpha=0.3)
+        st.pyplot()
+
+        # Scatter plot of actual vs predicted values for Random Forest
+        st.write("### Random Forest: Actual vs Predicted Values")
+        plt.figure(figsize=(10, 6))
+        plt.scatter(y_test, y_pred_rf, color='blue', alpha=0.6, edgecolors='k', label='Predictions')
+        plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--', lw=2, label='Ideal Fit')
+        plt.title('Random Forest: Actual vs Predicted Values', fontsize=16)
+        plt.xlabel('Actual Values (y_test)', fontsize=14)
+        plt.ylabel('Predicted Values (y_pred_rf)', fontsize=14)
+        plt.legend(fontsize=12)
+        plt.grid(alpha=0.3)
+        st.pyplot()
+
+        # Residuals plot for Random Forest
+        residuals_rf = y_test - y_pred_rf
+        st.write("### Random Forest: Residuals Plot")
+        plt.figure(figsize=(10, 6))
+        plt.scatter(y_pred_rf, residuals_rf, color='green', alpha=0.6, edgecolors='k')
+        plt.axhline(y=0, color='r', linestyle='--', lw=2)
+        plt.title('Random Forest: Residuals Plot', fontsize=16)
+        plt.xlabel('Predicted Values (y_pred_rf)', fontsize=14)
+        plt.ylabel('Residuals (y_test - y_pred_rf)', fontsize=14)
+        plt.grid(alpha=0.3)
         st.pyplot()
 
 if __name__ == "__main__":
