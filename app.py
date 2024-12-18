@@ -38,9 +38,9 @@ def main():
         year_range = st.slider("Select Year Range", 2013, 2017, (2013, 2017))
 
         # Filter data by the selected year range
-        data['Date'] = pd.to_datetime(data['Date'])
-        data['Year'] = data['Date'].dt.year
-        filtered_data = data[(data['Year'] >= year_range[0]) & (data['Year'] <= year_range[1])]
+        # data['Date'] = pd.to_datetime(data['Date'])
+        # data['Year'] = data['Date'].dt.year
+        filtered_data = data[(data['year'] >= year_range[0]) & (data['year'] <= year_range[1])]
 
         # Show filtered data
         st.write(f"Showing Data from {year_range[0]} to {year_range[1]}")
@@ -57,7 +57,7 @@ def main():
         plt.figure(figsize=(10, 6))
         plt.plot(filtered_data['Date'], filtered_data['PM2.5'], color='blue')
         plt.title('PM2.5 Over Time')
-        plt.xlabel('Date')
+        plt.xlabel('year')
         plt.ylabel('PM2.5')
         st.pyplot()
 
