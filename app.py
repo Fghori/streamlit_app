@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.ensemble import RandomForestRegressor
@@ -102,11 +102,9 @@ def main():
         X = data[features]
         y = data[target]
 
-        # Ensure all features are numeric
-        X = X.apply(pd.to_numeric, errors='coerce')
-
-        # Drop rows where any NaN values exist in X (features)
-        X = X.dropna()
+        # Convert categorical features to numeric
+        le = LabelEncoder()
+        X['wd'] = le.fit_transform(X['wd'].astype(str))  # Convert 'wd' to numeric using LabelEncoder
 
         # Scale features
         scaler = StandardScaler()
