@@ -103,7 +103,8 @@ def main():
         # Prepare features and target
         X = data[features]
         y = data[target]
-
+            # Ensure the features are numeric
+        X = X.select_dtypes(include=['float64', 'int64'])
         # Scale the features
         scaler = StandardScaler()
         X_scaled = scaler.fit_transform(X)
