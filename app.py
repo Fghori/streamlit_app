@@ -64,7 +64,7 @@ def main():
         # Correlation Heatmap
         st.write("### Correlation Heatmap")
         plt.figure(figsize=(10, 6))
-        corr = filtered_data[['Temperature', 'Humidity', 'Pressure', 'PM2.5']].corr()
+        corr = filtered_data[['TEMP', 'DEWP', 'PRES', 'PM2.5']].corr()
         sns.heatmap(corr, annot=True, cmap='coolwarm', fmt='.2f')
         st.pyplot()
 
@@ -72,7 +72,7 @@ def main():
         st.subheader("Modeling and Prediction")
 
         # Features and target
-        features = ['Temperature', 'Humidity', 'Pressure']
+        features = ['TEMP', 'DEWP', 'PRES']
         target = 'PM2.5'
 
         # Train-test split
