@@ -148,6 +148,7 @@ def main():
         plt.ylabel('Residuals (y_test - y_pred)', fontsize=14)
         plt.grid(alpha=0.3)
         st.pyplot()
+        
             # Train the Random Forest model
         rf_model = RandomForestRegressor(random_state=42)
         rf_model.fit(X_train, y_train)
@@ -185,35 +186,35 @@ def main():
         plt.grid(alpha=0.3)
         st.pyplot()
 
-        # Add the R-squared values of both models to a dictionary
-        scores = {
-        "Linear Regression": lr_r2,
-        "Random Forest": rf_r2
-        }
+#         # Add the R-squared values of both models to a dictionary
+#         scores = {
+#         "Linear Regression": lr_r2,
+#         "Random Forest": rf_r2
+#         }
 
-# Create a bar chart to compare the R-squared values of both models
-        st.write("### Comparison of R-squared Values: Linear Regression vs Random Forest")
-        plt.figure(figsize=(8, 6))
-        plt.bar(scores.keys(), scores.values(), color=['blue', 'green'])
-        plt.title("Model Comparison - R-squared Values", fontsize=16)
-        plt.xlabel("Model", fontsize=14)
-        plt.ylabel("R-squared", fontsize=14)
-        plt.ylim(0, 1)  # Since R-squared values range from 0 to 1
-        plt.grid(axis='y', alpha=0.3)
-        st.pyplot()
+# # Create a bar chart to compare the R-squared values of both models
+#         st.write("### Comparison of R-squared Values: Linear Regression vs Random Forest")
+#         plt.figure(figsize=(8, 6))
+#         plt.bar(scores.keys(), scores.values(), color=['blue', 'green'])
+#         plt.title("Model Comparison - R-squared Values", fontsize=16)
+#         plt.xlabel("Model", fontsize=14)
+#         plt.ylabel("R-squared", fontsize=14)
+#         plt.ylim(0, 1)  # Since R-squared values range from 0 to 1
+#         plt.grid(axis='y', alpha=0.3)
+#         st.pyplot()
 
-# Optionally, you can also add a scatter plot comparing the R-squared values
-        st.write("### Scatter Plot: R-squared Comparison (Linear Regression vs Random Forest)")    
-        plt.figure(figsize=(8, 6))
-        plt.scatter(scores.keys(), scores.values(), color='red', s=100, label='R-squared values')
-        plt.plot(scores.keys(), scores.values(), color='blue', linestyle='--', label='Ideal Fit')
-        plt.title("Scatter Plot - R-squared Comparison", fontsize=16)
-        plt.xlabel("Model", fontsize=14)
-        plt.ylabel("R-squared", fontsize=14)
-        plt.legend(fontsize=12)
-        plt.ylim(0, 1)
-        plt.grid(alpha=0.3)
-        st.pyplot()
+# # Optionally, you can also add a scatter plot comparing the R-squared values
+#         st.write("### Scatter Plot: R-squared Comparison (Linear Regression vs Random Forest)")    
+#         plt.figure(figsize=(8, 6))
+#         plt.scatter(scores.keys(), scores.values(), color='red', s=100, label='R-squared values')
+#         plt.plot(scores.keys(), scores.values(), color='blue', linestyle='--', label='Ideal Fit')
+#         plt.title("Scatter Plot - R-squared Comparison", fontsize=16)
+#         plt.xlabel("Model", fontsize=14)
+#         plt.ylabel("R-squared", fontsize=14)
+#         plt.legend(fontsize=12)
+#         plt.ylim(0, 1)
+#         plt.grid(alpha=0.3)
+#         st.pyplot()
 
 
 if __name__ == "__main__":
