@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -11,6 +10,15 @@ from sklearn.metrics import mean_squared_error
 # Load the dataset
 def load_data():
     data = pd.read_csv("data2.csv")
+    
+    # Parse 'Date' column to datetime if it's available
+    if 'Date' in data.columns:
+        data['Date'] = pd.to_datetime(data['Date'])
+        data['year'] = data['Date'].dt.year  # Extract year from Date
+
+    # Handle missing values by filling with the mean (you can also drop rows if preferred)
+    data.fillna(data.mean(), inplace=True)
+    
     return data
 
 def main():
@@ -38,8 +46,6 @@ def main():
         year_range = st.slider("Select Year Range", 2013, 2017, (2013, 2017))
 
         # Filter data by the selected year range
-        # data['Date'] = pd.to_datetime(data['Date'])
-        # data['Year'] = data['Date'].dt.year
         filtered_data = data[(data['year'] >= year_range[0]) & (data['year'] <= year_range[1])]
 
         # Show filtered data
@@ -57,7 +63,7 @@ def main():
         plt.figure(figsize=(10, 6))
         plt.plot(filtered_data['year'], filtered_data['PM2.5'], color='blue')
         plt.title('PM2.5 Over Time')
-        plt.xlabel('year')
+        plt.xlabel('Year')
         plt.ylabel('PM2.5')
         st.pyplot()
 
